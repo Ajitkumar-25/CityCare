@@ -1,6 +1,25 @@
 import React from "react";
+import { useState } from "react";
+import axios from "axios";
 
-function contact() {
+function Contact() {
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+
+  const sendemail = (e) => {
+    e.preventDefault();
+    console.log(email, subject, message);
+
+    axios
+      .post("http://localhost:5000/sendemail", { email, subject, message })
+      .then((res) => {
+        console.log(res);
+        alert("Message sent successfully");
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <section
       className="bg-white dark:bg-gray-900"
@@ -16,7 +35,7 @@ function contact() {
         <p className="mb-8 lg:mb-16 font-light text-center text-black-500 dark:text-gray-400 sm:text-xl">
           Got a technical issue? Want to send feedback feel free to tell us
         </p>
-        <form action="#" className="space-y-8">
+        <form action="#" className="space-y-8" onSubmit={sendemail}>
           <div>
             <label
               htmlFor="email"
@@ -29,7 +48,8 @@ function contact() {
               id="email"
               className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
               placeholder="name@flowbite.com"
-              required
+              required={true}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div>
@@ -44,7 +64,8 @@ function contact() {
               id="subject"
               className="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
               placeholder="Let us know how we can help you"
-              required
+              required={true}
+              onChange={(e) => setSubject(e.target.value)}
             />
           </div>
           <div className="sm:col-span-2">
@@ -59,6 +80,7 @@ function contact() {
               rows="6"
               className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
               placeholder="Leave a comment..."
+              onChange={(e) => setMessage(e.target.value)}
             ></textarea>
           </div>
           <button
@@ -73,4 +95,4 @@ function contact() {
   );
 }
 
-export default contact;
+export default Contact;
