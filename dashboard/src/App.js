@@ -9,6 +9,8 @@ import Login from "./components/login"
 import Contact from "./components/contact"
 import Team from "./components/team"
 import Dashboard from "./components/dashboard"
+import Location from "./components/Location"
+import Alert from "./components/alert"
 
 function App() {
   return (
@@ -22,6 +24,9 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/team" element={<Team />} />
           <Route path="/dashboard" element={<Dashboard/>}/>
+          <Route path="/location" element={<Location/>}/>
+          <Route path="/alerts" element={<Alert/>}/>
+          
         </Routes>
       </div>
       <Footer/>
