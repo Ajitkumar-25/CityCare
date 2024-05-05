@@ -146,7 +146,7 @@ function Signup() {
               </div>
 
               <div>
-                <label
+                {/* <label
                   htmlFor="category"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
@@ -160,7 +160,24 @@ function Signup() {
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required={true}
                   onChange={(e) => setCategory(e.target.value)}
-                />
+                /> */}
+
+                <select
+                  name="category"
+                  id="category"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  <option defaultValue={""}>
+                    Select your issue
+                  </option>
+                  <option value="water">water</option>
+                  <option value="Road Maintaince">Road Maintenance</option>
+                  <option value="stray_animals">Stray Animals</option>
+                  <option value="sanitation">Sanitation</option>
+                  <option value="garbage">Garbage</option>
+                  <option value="electricity">Electricity</option>
+                </select>
               </div>
               <div className="flex items-start">
                 <div className="flex items-center h-5">

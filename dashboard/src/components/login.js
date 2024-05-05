@@ -25,6 +25,11 @@ function Login() {
         console.log(res);
         if (res.status === 200) {
           alert("Login successful");
+          localStorage.setItem("token", res.data.token);
+          localStorage.setItem(
+            "organization",
+            JSON.stringify(res.data)
+          );
           navigate("/dashboard");
         } else {
           alert("Invalid credentials");

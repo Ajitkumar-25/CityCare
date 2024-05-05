@@ -1,10 +1,218 @@
-import React from "react";
 import Tabs from "./tabs";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-function dashboard() {
+import { Modal, Ripple, initTE } from "tw-elements";
+
+// import { Link } from "react-router-dom";
+
+function Dashboard() {
+  // fetch all complaints
+
+  const [complaints, setComplaints] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const [modaldata, setModalData] = useState({
+    _id: "",
+    title: "",
+    description: "",
+    media: "",
+    locationInfo: "",
+    createdAt: "",
+    status: "",
+    type: "",
+    message: "",
+    citizenId: "",
+  });
+
+  useEffect(() => {
+    initTE({ Modal, Ripple });
+    const org_info = JSON.parse(
+      localStorage.getItem("organization")
+    ).Organization;
+    const token = localStorage.getItem("token").toString();
+    // console.log(org_info);
+    console.log(org_info.category);
+    let data = {
+      category: org_info.category.toString(),
+      searchQuery: searchQuery.toString(),
+    };
+    if (data.category == null) {
+      data.category = "";
+    }
+    // console.log(data);
+    axios
+      .post("http://localhost:5001/api_all_complaints_organization", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res.data.complaints);
+        setComplaints(res.data.complaints);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [searchQuery]);
+
+  const showDetails = (id) => {
+    fetch(`http://localhost:5001/api_all_complaints_organization/${id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setModalData(data);
+        console.log(data);
+      });
+  };
+
   return (
     <>
       <Tabs />
+
+      {/* <!-- Modal --> */}
+
+      <div
+        data-te-modal-init
+        className="fixed left-0 top-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none"
+        id="exampleModalScrollable"
+        tabIndex="-1"
+        aria-labelledby="exampleModalScrollableLabel"
+        aria-hidden="true"
+      >
+        <div
+          data-te-modal-dialog-ref
+          className="pointer-events-none relative h-[calc(100%-1rem)] w-auto translate-y-[-50px] opacity-0 transition-all duration-300 ease-in-out min-[576px]:mx-auto min-[576px]:mt-7 min-[576px]:h-[calc(100%-3.5rem)] min-[576px]:max-w-[500px]"
+        >
+          <div className="pointer-events-auto relative flex max-h-[100%] w-full flex-col overflow-hidden rounded-md border-none bg-white bg-clip-padding text-current shadow-4 outline-none dark:bg-surface-dark">
+            <div className="flex flex-shrink-0 items-center justify-between rounded-t-md border-b-2 border-neutral-100 p-4 dark:border-white/10">
+              <h5
+                className="text-xl font-medium leading-normal text-surface dark:text-white"
+                id="exampleModalScrollableLabel"
+              >
+                {modaldata.complaint ? modaldata.complaint.title : "Loading..."}
+                By{" "}
+                {modaldata.complaint
+                  ? modaldata.complaint.citizenId.fname +
+                    " " +
+                    modaldata.complaint.citizenId.lname
+                  : "Loading..."}
+              </h5>
+              <button
+                type="button"
+                className="box-content rounded-none border-none text-neutral-500 hover:text-neutral-800 hover:no-underline focus:text-neutral-800 focus:opacity-100 focus:shadow-none focus:outline-none dark:text-neutral-400 dark:hover:text-neutral-300 dark:focus:text-neutral-300"
+                data-te-modal-dismiss
+                aria-label="Close"
+              >
+                <span className="[&>svg]:h-6 [&>svg]:w-6">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </span>
+              </button>
+            </div>
+
+            <div className="relative overflow-y-auto p-4">
+              <p>
+                {modaldata.complaint
+                  ? modaldata.complaint.description
+                  : "Description Loading..."}
+              </p>
+
+              <div className="my-4">
+                {modaldata.complaint ? (
+                  <img
+                    src={`http://localhost:5001/${modaldata.complaint.media}`}
+                    alt="img"
+                  ></img>
+                ) : (
+                  "media loading"
+                )}
+              </div>
+
+              <div>
+                <p>
+                  {modaldata.complaint
+                    ? modaldata.complaint.locationInfo.address
+                    : "Location Loading..."}
+                </p>
+              </div>
+
+              <div>
+                <p>
+                  {modaldata.complaint
+                    ? modaldata.complaint.createdAt
+                    : "Date Loading..."}
+                </p>
+              </div>
+
+              <label
+                htmlFor="status"
+                className="block mt-4 text-sm font-medium text-gray-700"
+              >
+                Status
+              </label>
+              <select>
+                <option value="">Select Status</option>
+                <option value="not_viewed">Not Viewed</option>
+                <option value="in_progress">In Progress</option>
+                <option value="resolved">Resolved</option>
+              </select>
+
+              <label
+                htmlFor="message"
+                className="block mt-4 text-sm font-medium text-gray-700"
+              >
+                Message
+              </label>
+              <textarea
+                placeholder="Enter your message here..."
+                className="w-full h-24 p-2 border border-gray-300 rounded-md mt-4"
+              ></textarea>
+
+              <div style={{ height: "800px" }}></div>
+              <p>This content should appear at the bottom after you scroll.</p>
+            </div>
+
+            <div className="flex flex-shrink-0 flex-wrap items-center justify-end rounded-b-md border-t-2 border-neutral-100 p-4 dark:border-white/10">
+              <button
+                type="button"
+                className="inline-block rounded bg-primary-100 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-primary-700 transition duration-150 ease-in-out hover:bg-primary-accent-200 focus:bg-primary-accent-200 focus:outline-none focus:ring-0 active:bg-primary-accent-200 dark:bg-primary-300 dark:hover:bg-primary-400 dark:focus:bg-primary-400 dark:active:bg-primary-400"
+                data-te-modal-dismiss
+                data-te-ripple-init
+                data-te-ripple-color="light"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="ms-1 inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-primary-3 transition duration-150 ease-in-out hover:bg-primary-accent-300 hover:shadow-primary-2 focus:bg-primary-accent-300 focus:shadow-primary-2 focus:outline-none focus:ring-0 active:bg-primary-600 active:shadow-primary-2 dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong"
+                data-te-ripple-init
+                data-te-ripple-color="light"
+              >
+                Save changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <section
         className="text-black-400 body-font"
         style={{
@@ -15,12 +223,6 @@ function dashboard() {
         <div className="container px-5 py-10 mx-auto">
           <div className="mb-5">
             <form className="max-w-md mx-auto">
-              <label
-                htmlFor="default-search"
-                className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-              >
-                Search
-              </label>
               <div className="relative">
                 <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                   <svg
@@ -45,437 +247,89 @@ function dashboard() {
                   className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Search Mockups, Logos..."
                   required
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button
-                  type="submit"
-                  className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                >
-                  Search
-                </button>
               </div>
             </form>
           </div>
           <div className="flex flex-wrap -m-4">
-            <div className="p-4 md:w-1/3">
-              <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
-                <img
-                  className="lg:h-48 md:h-36 w-full object-cover object-center"
-                  src="https://dummyimage.com/720x400"
-                  alt="blog"
-                />
-                <div className="p-6 bg-white">
-                  <h2 className="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">
-                    CATEGORY
-                  </h2>
-                  <h1 className="title-font text-lg font-medium text-white mb-3">
-                    The Catalyzer
-                  </h1>
-                  <p className="leading-relaxed mb-3">
-                    Photo booth fam kinfolk cold-pressed sriracha leggings
-                    jianbing microdosing tousled waistcoat.
-                  </p>
-                  <div className="flex items-center flex-wrap ">
-                    <a
-                      href="/"
-                      className="text-indigo-400 inline-flex items-center md:mb-2 lg:mb-0"
+            {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div> */}
+
+            {complaints.map((complaint, idx) => (
+              <div key={idx} className="p-4 md:w-1/3">
+                <div className="h-full  rounded-lg overflow-hidden">
+                  <img
+                    className="lg:h-48 md:h-36 w-full object-cover object-center"
+                    src={`http://localhost:5001/${complaint.media}`}
+                    alt="blog"
+                  />
+                  <div className="p-6 bg-white">
+                    <h2 className="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">
+                      {complaint.type}
+                    </h2>
+                    <h1 className="title-font text-lg font-medium text-black mb-3">
+                      {complaint.title}
+                    </h1>
+                    <p className="leading-relaxed mb-3">
+                      {complaint.description}
+                    </p>
+
+                    <span className="mt-2">
+                      {complaint.locationInfo.address}
+                    </span>
+
+                    <div className="flex items-center flex-wrap mt-4 ">
+                      <span>{complaint.createdAt}</span>
+                      <span className="text-gray-500 mr-3 inline-flex items-center lg:ml-auto md:ml-0 ml-auto leading-none text-sm pr-3 py-1 border-r-2 border-gray-800">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="1em"
+                          height="1em"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625zM15 12h-1v8h-4v-8H6.081L12 4.601L17.919 12z"
+                          />
+                        </svg>
+                        1.2K
+                      </span>
+                      <span className="text-gray-500 inline-flex items-center leading-none text-sm">
+                        <svg
+                          className="w-4 h-4 mr-1"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"></path>
+                        </svg>
+                        6
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      data-te-toggle="modal"
+                      data-te-target="#exampleModalScrollable"
+                      className="w-full mt-6 text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                      onClick={(e) => showDetails(complaint._id)}
                     >
-                      Learn More
-                      <svg
-                        className="w-4 h-4 ml-2"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M5 12h14"></path>
-                        <path d="M12 5l7 7-7 7"></path>
-                      </svg>
-                    </a>
-                    <span className="text-gray-500 mr-3 inline-flex items-center lg:ml-auto md:ml-0 ml-auto leading-none text-sm pr-3 py-1 border-r-2 border-gray-800">
-                      <svg
-                        className="w-4 h-4 mr-1"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                      </svg>
-                      1.2K
-                    </span>
-                    <span className="text-gray-500 inline-flex items-center leading-none text-sm">
-                      <svg
-                        className="w-4 h-4 mr-1"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"></path>
-                      </svg>
-                      6
-                    </span>
+                      Details
+                    </button>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="p-4 md:w-1/3">
-              <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
-                <img
-                  className="lg:h-48 md:h-36 w-full object-cover object-center"
-                  src="https://dummyimage.com/720x400"
-                  alt="blog"
-                />
-                <div className="p-6 bg-white">
-                  <h2 className="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">
-                    CATEGORY
-                  </h2>
-                  <h1 className="title-font text-lg font-medium text-white mb-3">
-                    The Catalyzer
-                  </h1>
-                  <p className="leading-relaxed mb-3">
-                    Photo booth fam kinfolk cold-pressed sriracha leggings
-                    jianbing microdosing tousled waistcoat.
-                  </p>
-                  <div className="flex items-center flex-wrap ">
-                    <a
-                      href="/"
-                      className="text-indigo-400 inline-flex items-center md:mb-2 lg:mb-0"
-                    >
-                      Learn More
-                      <svg
-                        className="w-4 h-4 ml-2"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M5 12h14"></path>
-                        <path d="M12 5l7 7-7 7"></path>
-                      </svg>
-                    </a>
-                    <span className="text-gray-500 mr-3 inline-flex items-center lg:ml-auto md:ml-0 ml-auto leading-none text-sm pr-3 py-1 border-r-2 border-gray-800">
-                      <svg
-                        className="w-4 h-4 mr-1"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                      </svg>
-                      1.2K
-                    </span>
-                    <span className="text-gray-500 inline-flex items-center leading-none text-sm">
-                      <svg
-                        className="w-4 h-4 mr-1"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"></path>
-                      </svg>
-                      6
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="p-4 md:w-1/3">
-              <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
-                <img
-                  className="lg:h-48 md:h-36 w-full object-cover object-center"
-                  src="https://dummyimage.com/720x400"
-                  alt="blog"
-                />
-                <div className="p-6 bg-white">
-                  <h2 className="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">
-                    CATEGORY
-                  </h2>
-                  <h1 className="title-font text-lg font-medium text-white mb-3">
-                    The Catalyzer
-                  </h1>
-                  <p className="leading-relaxed mb-3">
-                    Photo booth fam kinfolk cold-pressed sriracha leggings
-                    jianbing microdosing tousled waistcoat.
-                  </p>
-                  <div className="flex items-center flex-wrap ">
-                    <a
-                      href="/"
-                      className="text-indigo-400 inline-flex items-center md:mb-2 lg:mb-0"
-                    >
-                      Learn More
-                      <svg
-                        className="w-4 h-4 ml-2"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M5 12h14"></path>
-                        <path d="M12 5l7 7-7 7"></path>
-                      </svg>
-                    </a>
-                    <span className="text-gray-500 mr-3 inline-flex items-center lg:ml-auto md:ml-0 ml-auto leading-none text-sm pr-3 py-1 border-r-2 border-gray-800">
-                      <svg
-                        className="w-4 h-4 mr-1"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                      </svg>
-                      1.2K
-                    </span>
-                    <span className="text-gray-500 inline-flex items-center leading-none text-sm">
-                      <svg
-                        className="w-4 h-4 mr-1"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"></path>
-                      </svg>
-                      6
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="p-4 md:w-1/3">
-              <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
-                <img
-                  className="lg:h-48 md:h-36 w-full object-cover object-center"
-                  src="https://dummyimage.com/720x400"
-                  alt="blog"
-                />
-                <div className="p-6 bg-white">
-                  <h2 className="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">
-                    CATEGORY
-                  </h2>
-                  <h1 className="title-font text-lg font-medium text-white mb-3">
-                    The Catalyzer
-                  </h1>
-                  <p className="leading-relaxed mb-3">
-                    Photo booth fam kinfolk cold-pressed sriracha leggings
-                    jianbing microdosing tousled waistcoat.
-                  </p>
-                  <div className="flex items-center flex-wrap ">
-                    <a
-                      href="/"
-                      className="text-indigo-400 inline-flex items-center md:mb-2 lg:mb-0"
-                    >
-                      Learn More
-                      <svg
-                        className="w-4 h-4 ml-2"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M5 12h14"></path>
-                        <path d="M12 5l7 7-7 7"></path>
-                      </svg>
-                    </a>
-                    <span className="text-gray-500 mr-3 inline-flex items-center lg:ml-auto md:ml-0 ml-auto leading-none text-sm pr-3 py-1 border-r-2 border-gray-800">
-                      <svg
-                        className="w-4 h-4 mr-1"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                      </svg>
-                      1.2K
-                    </span>
-                    <span className="text-gray-500 inline-flex items-center leading-none text-sm">
-                      <svg
-                        className="w-4 h-4 mr-1"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"></path>
-                      </svg>
-                      6
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="p-4 md:w-1/3">
-              <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
-                <img
-                  className="lg:h-48 md:h-36 w-full object-cover object-center"
-                  src="https://dummyimage.com/720x400"
-                  alt="blog"
-                />
-                <div className="p-6 bg-white">
-                  <h2 className="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">
-                    CATEGORY
-                  </h2>
-                  <h1 className="title-font text-lg font-medium text-white mb-3">
-                    The Catalyzer
-                  </h1>
-                  <p className="leading-relaxed mb-3">
-                    Photo booth fam kinfolk cold-pressed sriracha leggings
-                    jianbing microdosing tousled waistcoat.
-                  </p>
-                  <div className="flex items-center flex-wrap ">
-                    <a
-                      href="/"
-                      className="text-indigo-400 inline-flex items-center md:mb-2 lg:mb-0"
-                    >
-                      Learn More
-                      <svg
-                        className="w-4 h-4 ml-2"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M5 12h14"></path>
-                        <path d="M12 5l7 7-7 7"></path>
-                      </svg>
-                    </a>
-                    <span className="text-gray-500 mr-3 inline-flex items-center lg:ml-auto md:ml-0 ml-auto leading-none text-sm pr-3 py-1 border-r-2 border-gray-800">
-                      <svg
-                        className="w-4 h-4 mr-1"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                      </svg>
-                      1.2K
-                    </span>
-                    <span className="text-gray-500 inline-flex items-center leading-none text-sm">
-                      <svg
-                        className="w-4 h-4 mr-1"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"></path>
-                      </svg>
-                      6
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="p-4 md:w-1/3">
-              <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
-                <img
-                  className="lg:h-48 md:h-36 w-full object-cover object-center"
-                  src="https://dummyimage.com/720x400"
-                  alt="blog"
-                />
-                <div className="p-6 bg-white">
-                  <h2 className="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">
-                    CATEGORY
-                  </h2>
-                  <h1 className="title-font text-lg font-medium text-white mb-3">
-                    The Catalyzer
-                  </h1>
-                  <p className="leading-relaxed mb-3">
-                    Photo booth fam kinfolk cold-pressed sriracha leggings
-                    jianbing microdosing tousled waistcoat.
-                  </p>
-                  <div className="flex items-center flex-wrap ">
-                    <a
-                      href="/"
-                      className="text-indigo-400 inline-flex items-center md:mb-2 lg:mb-0"
-                    >
-                      Learn More
-                      <svg
-                        className="w-4 h-4 ml-2"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M5 12h14"></path>
-                        <path d="M12 5l7 7-7 7"></path>
-                      </svg>
-                    </a>
-                    <span className="text-gray-500 mr-3 inline-flex items-center lg:ml-auto md:ml-0 ml-auto leading-none text-sm pr-3 py-1 border-r-2 border-gray-800">
-                      <svg
-                        className="w-4 h-4 mr-1"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                      </svg>
-                      1.2K
-                    </span>
-                    <span className="text-gray-500 inline-flex items-center leading-none text-sm">
-                      <svg
-                        className="w-4 h-4 mr-1"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"></path>
-                      </svg>
-                      6
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            ))}
+            <button
+              type="button"
+              data-te-toggle="modal"
+              data-te-target="#exampleModalScrollable"
+              className="w-full mt-6 text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 hidden"
+            >
+              Details
+            </button>
           </div>
         </div>
       </section>
@@ -483,4 +337,4 @@ function dashboard() {
   );
 }
 
-export default dashboard;
+export default Dashboard;
