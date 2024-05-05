@@ -74,24 +74,22 @@ function Dashboard() {
 
   const handleSubmit = () => {
     console.log(modaldata);
-    // fetch(
-    //   `http://localhost:5001/api_all_complaints_organization/${modaldata._id}`,
-    //   {
-    //     method: "PUT",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //     },
-    //     body: JSON.stringify({
-    //       status: modaldata.complaint.status,
-    //       message: modaldata.complaint.message,
-    //     }),
-    //   }
-    // )
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     console.log(data);
-    //   });
+    fetch(`http://localhost:5001/api_update_status`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({
+        status: modaldata.complaint.status,
+        message: modaldata.complaint.message,
+        complaintId: modaldata.complaint._id,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      });
   };
 
   return (
@@ -323,11 +321,11 @@ function Dashboard() {
               </div>
             </form>
           </div>
-          <div className="flex flex-wrap -m-4">
+          <div className="flex flex-wrap m-4 ">
             {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div> */}
 
             {complaints.map((complaint, idx) => (
-              <div key={idx} className="p-4 md:w-1/3">
+              <div key={idx} className="p-4  md:w-1/3 ">
                 <div className="h-full  rounded-lg overflow-hidden">
                   <img
                     className="lg:h-48 md:h-36 w-full object-cover object-center"
@@ -345,15 +343,15 @@ function Dashboard() {
                       <button className="flex ml-auto  ">
                         {/* show batches according to atstus */}
                         {complaint.status === "Not Viewed" ? (
-                          <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-md font-medium text-red-600 ring-1 ring-inset ring-gray-500/10">
+                          <span className="bg-red-100 text-red-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
                             Not Viewed
                           </span>
                         ) : complaint.status === "in Progress" ? (
-                          <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-md font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10">
+                          <span className="bg-yellow-100 text-yellow -800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
                             In progress
                           </span>
                         ) : (
-                          <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-md font-medium text-green-600 ring-1 ring-inset ring-gray-500/10">
+                          <span className="bg-green-200 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
                             Resolved
                           </span>
                         )}
