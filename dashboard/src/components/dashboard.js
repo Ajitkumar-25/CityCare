@@ -72,6 +72,28 @@ function Dashboard() {
       });
   };
 
+  const handleSubmit = () => {
+    console.log(modaldata);
+    // fetch(
+    //   `http://localhost:5001/api_all_complaints_organization/${modaldata._id}`,
+    //   {
+    //     method: "PUT",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //     },
+    //     body: JSON.stringify({
+    //       status: modaldata.complaint.status,
+    //       message: modaldata.complaint.message,
+    //     }),
+    //   }
+    // )
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     console.log(data);
+    //   });
+  };
+
   return (
     <>
       <Tabs />
@@ -168,11 +190,26 @@ function Dashboard() {
               >
                 Status
               </label>
-              <select>
-                <option value="">Select Status</option>
-                <option value="not_viewed">Not Viewed</option>
-                <option value="in_progress">In Progress</option>
-                <option value="resolved">Resolved</option>
+              <select
+                onChange={(e) => {
+                  setModalData({
+                    ...modaldata,
+                    complaint: {
+                      ...modaldata.complaint,
+                      status: e.target.value,
+                    },
+                  });
+                  // console.log(modaldata)
+                }}
+              >
+                <option value="">
+                  {modaldata.complaint
+                    ? modaldata.complaint.status
+                    : "Select a status"}
+                </option>
+                <option value="Not Viewed">Not Viewed</option>
+                <option value="in Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
               </select>
 
               <label
@@ -181,13 +218,46 @@ function Dashboard() {
               >
                 Message
               </label>
-              <textarea
-                placeholder="Enter your message here..."
-                className="w-full h-24 p-2 border border-gray-300 rounded-md mt-4"
-              ></textarea>
+              {modaldata.complaint ? (
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="3"
+                  className="mt-1 block w-full shadow-sm sm:text-sm focus:ring-primary-500 focus:border-primary-500 border-gray-300 rounded-md"
+                  placeholder="Add a message"
+                  value={modaldata.complaint.message}
+                  onChange={(e) => {
+                    setModalData({
+                      ...modaldata,
+                      complaint: {
+                        ...modaldata.complaint,
+                        message: e.target.value,
+                      },
+                    });
+                  }}
+                ></textarea>
+              ) : (
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="3"
+                  className="mt-1 block w-full shadow-sm sm:text-sm focus:ring-primary-500 focus:border-primary-500 border-gray-300 rounded-md"
+                  placeholder="Add a message"
+                  value=""
+                  onChange={(e) => {
+                    setModalData({
+                      ...modaldata,
+                      complaint: {
+                        ...modaldata.complaint,
+                        message: e.target.value,
+                      },
+                    });
+                  }}
+                ></textarea>
+              )}
 
-              <div style={{ height: "800px" }}></div>
-              <p>This content should appear at the bottom after you scroll.</p>
+              {/* <div style={{ height: "400px" }}></div>
+              <p>This content should appear at the bottom after you scroll.</p> */}
             </div>
 
             <div className="flex flex-shrink-0 flex-wrap items-center justify-end rounded-b-md border-t-2 border-neutral-100 p-4 dark:border-white/10">
@@ -201,6 +271,7 @@ function Dashboard() {
                 Close
               </button>
               <button
+                onClick={handleSubmit}
                 type="button"
                 className="ms-1 inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-primary-3 transition duration-150 ease-in-out hover:bg-primary-accent-300 hover:shadow-primary-2 focus:bg-primary-accent-300 focus:shadow-primary-2 focus:outline-none focus:ring-0 active:bg-primary-600 active:shadow-primary-2 dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong"
                 data-te-ripple-init
@@ -264,15 +335,34 @@ function Dashboard() {
                     alt="blog"
                   />
                   <div className="p-6 bg-white">
-                    <h2 className="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">
+                    {/* <h2 className="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">
                       {complaint.type}
-                    </h2>
-                    <h1 className="title-font text-lg font-medium text-black mb-3">
-                      {complaint.title}
-                    </h1>
-                    <p className="leading-relaxed mb-3">
+                    </h2> */}
+                    <div className="flex">
+                      <h1 className="title-font text-lg font-medium text-black mb-3">
+                        {complaint.title}
+                      </h1>
+                      <button className="flex ml-auto  ">
+                        {/* show batches according to atstus */}
+                        {complaint.status === "Not Viewed" ? (
+                          <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-md font-medium text-red-600 ring-1 ring-inset ring-gray-500/10">
+                            Not Viewed
+                          </span>
+                        ) : complaint.status === "in Progress" ? (
+                          <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-md font-medium text-yellow-600 ring-1 ring-inset ring-gray-500/10">
+                            In progress
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-md font-medium text-green-600 ring-1 ring-inset ring-gray-500/10">
+                            Resolved
+                          </span>
+                        )}
+                      </button>
+                    </div>
+
+                    {/* <p className="leading-relaxed mb-3">
                       {complaint.description}
-                    </p>
+                    </p> */}
 
                     <span className="mt-2">
                       {complaint.locationInfo.address}
