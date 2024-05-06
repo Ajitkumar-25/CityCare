@@ -1,4 +1,3 @@
-
 import React, { useRef } from "react";
 import { GoogleMap, useJsApiLoader, MarkerF } from "@react-google-maps/api";
 import Tabs from "./tabs";
@@ -7,9 +6,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 const containerStyle = {
-  width: "60%",
+  width: "100%",
   height: "100vh",
-  marginleft:"10px"
+  marginleft: "10px",
 };
 
 const center = {
@@ -77,7 +76,7 @@ function Location() {
 
   return isLoaded ? (
     <>
-      {console.log(complaint)}
+      {/* {console.log(complaint)} */}
       <Tabs />
       <GoogleMap
         mapContainerStyle={containerStyle}

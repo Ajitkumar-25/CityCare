@@ -158,7 +158,7 @@ function Dashboard() {
               <div className="my-4">
                 {modaldata.complaint ? (
                   <img
-                    src={`http://localhost:5001/${modaldata.complaint.media}`}
+                    src={`${modaldata.complaint.media}`}
                     alt="img"
                   ></img>
                 ) : (
@@ -329,7 +329,7 @@ function Dashboard() {
                 <div className="h-full  rounded-lg overflow-hidden">
                   <img
                     className="lg:h-48 md:h-36 w-full object-cover object-center"
-                    src={`http://localhost:5001/${complaint.media}`}
+                    src={`${complaint.media}`}
                     alt="blog"
                   />
                   <div className="p-6 bg-white">
