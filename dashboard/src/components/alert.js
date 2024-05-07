@@ -20,6 +20,7 @@ function Alert() {
         console.log(res);
         if (res.status === 200) {
           alert("Alert sent successfully");
+          window.location.reload();
         } else {
           alert("Invalid credentials");
         }

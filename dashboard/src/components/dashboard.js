@@ -117,14 +117,29 @@ function Dashboard() {
                 className="text-xl font-medium leading-normal text-surface dark:text-white"
                 id="exampleModalScrollableLabel"
               >
-                {modaldata.complaint ? modaldata.complaint.title : "Loading..."}
-                By{" "}
+                {modaldata.complaint ? modaldata.complaint.title : "Loading..."}{" "}
+                : By {" "}
+                
                 {modaldata.complaint
                   ? modaldata.complaint.citizenId.fname +
                     " " +
                     modaldata.complaint.citizenId.lname
                   : "Loading..."}
               </h5>
+              <div>
+              <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  id="person"
+                >
+                  <path
+                    fill="#212121"
+                    d="M11.5,8 C12.3284271,8 13,8.67157288 13,9.5 L13,10 C13,11.9714437 11.14049,14 8,14 C4.85950997,14 3,11.9714437 3,10 L3,9.5 C3,8.67157288 3.67157288,8 4.5,8 L11.5,8 Z M8,1.5 C9.51878306,1.5 10.75,2.73121694 10.75,4.25 C10.75,5.76878306 9.51878306,7 8,7 C6.48121694,7 5.25,5.76878306 5.25,4.25 C5.25,2.73121694 6.48121694,1.5 8,1.5 Z"
+                  ></path>
+                </svg>
+              </div>
               <button
                 type="button"
                 className="box-content rounded-none border-none text-neutral-500 hover:text-neutral-800 hover:no-underline focus:text-neutral-800 focus:opacity-100 focus:shadow-none focus:outline-none dark:text-neutral-400 dark:hover:text-neutral-300 dark:focus:text-neutral-300"
@@ -150,13 +165,14 @@ function Dashboard() {
             </div>
 
             <div className="relative overflow-y-auto p-4">
-              <p>
+              <span>Description:</span>
+              <p className="text-xl">
                 {modaldata.complaint
                   ? modaldata.complaint.description
                   : "Description Loading..."}
               </p>
 
-              <div className="my-4">
+              <div className="my-4 border rounded-3xl">
                 {modaldata.complaint ? (
                   <img src={`${modaldata.complaint.media}`} alt="img"></img>
                 ) : (
@@ -164,16 +180,19 @@ function Dashboard() {
                 )}
               </div>
 
-              <div>
+              <div className="">
                 <p>
+                  Complaint Address:
+                  <br />
                   {modaldata.complaint
                     ? modaldata.complaint.locationInfo.address
                     : "Location Loading..."}
                 </p>
               </div>
-
+<br/>
               <div>
                 <p>
+                  Complaint Date : {" "}
                   {modaldata.complaint
                     ? modaldata.complaint.createdAt
                     : "Date Loading..."}
@@ -182,7 +201,7 @@ function Dashboard() {
 
               <label
                 htmlFor="status"
-                className="block mt-4 text-sm font-medium text-gray-700"
+                className="block mt-4 text-xl font-medium text-gray-700"
               >
                 Status
               </label>
@@ -210,9 +229,9 @@ function Dashboard() {
 
               <label
                 htmlFor="message"
-                className="block mt-4 text-sm font-medium text-gray-700"
+                className="block mt-4 text-xl font-medium text-gray-700"
               >
-                Message
+                Updates
               </label>
               {modaldata.complaint ? (
                 <textarea
@@ -375,7 +394,9 @@ function Dashboard() {
                       >
                         <path d="M 25 2 C 12.264481 2 2 12.264481 2 25 C 2 37.735519 12.264481 48 25 48 C 37.735519 48 48 37.735519 48 25 C 48 12.264481 37.735519 2 25 2 z M 25 4 C 36.664481 4 46 13.335519 46 25 C 46 36.664481 36.664481 46 25 46 C 13.335519 46 4 36.664481 4 25 C 4 13.335519 13.335519 4 25 4 z M 24.984375 6.9863281 A 1.0001 1.0001 0 0 0 24 8 L 24 22.173828 C 22.81904 22.572762 22 23.655572 22 25 C 22 25.471362 22.108361 25.906202 22.289062 26.296875 L 16.292969 32.292969 A 1.0001 1.0001 0 1 0 17.707031 33.707031 L 23.703125 27.710938 C 24.093798 27.891639 24.528638 28 25 28 C 26.7 28 28 26.7 28 25 C 28 23.655572 27.18096 22.572762 26 22.173828 L 26 8 A 1.0001 1.0001 0 0 0 24.984375 6.9863281 z"></path>
                       </svg>
-                      <span className="ml-2">{complaint.diffDays} day ago...</span>
+                      <span className="ml-2">
+                        {complaint.diffDays} day ago...
+                      </span>
                       <span className="text-gray-500 mr-3 inline-flex items-center lg:ml-auto md:ml-0 ml-auto leading-none text-sm pr-3 py-1 border-r-2 border-gray-800">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
