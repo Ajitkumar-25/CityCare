@@ -89,6 +89,7 @@ function Dashboard() {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
+        window.location.reload();
       });
   };
 
@@ -157,10 +158,7 @@ function Dashboard() {
 
               <div className="my-4">
                 {modaldata.complaint ? (
-                  <img
-                    src={`${modaldata.complaint.media}`}
-                    alt="img"
-                  ></img>
+                  <img src={`${modaldata.complaint.media}`} alt="img"></img>
                 ) : (
                   "media loading"
                 )}
@@ -401,7 +399,8 @@ function Dashboard() {
                       type="button"
                       data-te-toggle="modal"
                       data-te-target="#exampleModalScrollable"
-                      className="w-full mt-6 text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                      style={{ backgroundColor: "#7d5fff" }}
+                      className="w-full mt-6 text-white hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                       onClick={(e) => showDetails(complaint._id)}
                     >
                       Details
@@ -414,7 +413,8 @@ function Dashboard() {
               type="button"
               data-te-toggle="modal"
               data-te-target="#exampleModalScrollable"
-              className="w-full mt-6 text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 hidden"
+              style={{ backgroundColor: "#7d5fff" }}
+              className="w-full mt-6 text-white hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 hidden"
             >
               Details
             </button>
