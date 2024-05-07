@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { GoogleMap, useJsApiLoader, MarkerF } from "@react-google-maps/api";
 import Tabs from "./tabs";
 import axios from "axios";
@@ -37,7 +37,7 @@ const getMarkerIcon = (category) => {
 
 function Location() {
   const [complaint, setComplaints] = useState([]);
-  const mapref = useRef();
+  // const mapref = useRef();
   const org_info = JSON.parse(
     localStorage.getItem("organization")
   ).Organization;
@@ -54,7 +54,7 @@ function Location() {
       }
     };
     fetchComplaints();
-  }, []);
+  }, [org_info.category]);
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",

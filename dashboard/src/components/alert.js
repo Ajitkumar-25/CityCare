@@ -7,17 +7,15 @@ function Alert() {
   const [pincode, setpincode] = useState("");
   const [message, setMessage] = useState("");
 
-  const handlesubmit = (e) => {
+  const handlesubmit = async (e) => {
     e.preventDefault();
     console.log(pincode, message);
     const data = {
       pincode: pincode,
       message: message,
     };
-    axios
-      .post("http://localhost:5001/create_alert", {
-        data,
-      })
+    await axios
+      .post("http://localhost:5001/create_alert", data)
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
@@ -105,3 +103,7 @@ function Alert() {
 }
 
 export default Alert;
+
+
+
+
