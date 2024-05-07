@@ -11,6 +11,8 @@ import Team from "./components/team"
 import Dashboard from "./components/dashboard"
 import Location from "./components/Location"
 import Alert from "./components/alert"
+import Analytics from "./components/analytics"
+
 
 function App() {
   return (
@@ -26,6 +28,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard/>}/>
           <Route path="/location" element={<Location/>}/>
           <Route path="/alerts" element={<Alert/>}/>
+          <Route path="/analytics" element={<Analytics/>}/>
           
         </Routes>
       </div>
