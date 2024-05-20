@@ -115,6 +115,7 @@
 
 
 import React, { useEffect, useState } from "react";
+ // eslint-disable-next-line
 import { GoogleMap, useJsApiLoader, Marker, DirectionsService, DirectionsRenderer } from "@react-google-maps/api";
 import Tabs from "./tabs";
 import axios from "axios";
@@ -133,7 +134,9 @@ const center = {
 const Location = () => {
   const [complaints, setComplaints] = useState([]);
   const [directions, setDirections] = useState(null);
+   // eslint-disable-next-line
   const [directionsError, setDirectionsError] = useState(null);
+   // eslint-disable-next-line
   const [selectedMarker, setSelectedMarker] = useState(null);
 
   const org_info = JSON.parse(localStorage.getItem("organization")).Organization;
@@ -181,7 +184,7 @@ const Location = () => {
     setSelectedMarker(complaint);
     calculateDirections(center, destination);
   };
-
+ // eslint-disable-next-line
   const clearDirections = () => {
     setDirections(null);
     setDirectionsError(null);
