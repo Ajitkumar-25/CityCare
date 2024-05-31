@@ -12,7 +12,7 @@ function Contact() {
     console.log(email, subject, message);
 
     axios
-      .post("http://localhost:5000/sendemail", { email, subject, message })
+      .post("https://citycare.onrender.com/sendemail", { email, subject, message })
       .then((res) => {
         console.log(res);
         alert("Message sent successfully");

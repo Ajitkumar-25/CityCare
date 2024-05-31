@@ -42,7 +42,7 @@ function Dashboard() {
     }
     // console.log(data);
     axios
-      .post("http://localhost:5001/api_all_complaints_organization", data, {
+      .post("https://citycare.onrender.com/api_all_complaints_organization", data, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -58,7 +58,7 @@ function Dashboard() {
   }, [searchQuery]);
 
   const showDetails = (id) => {
-    fetch(`http://localhost:5001/api_all_complaints_organization/${id}`, {
+    fetch(`https://citycare.onrender.com/api_all_complaints_organization/${id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -74,7 +74,7 @@ function Dashboard() {
 
   const handleSubmit = () => {
     console.log(modaldata);
-    fetch(`http://localhost:5001/api_update_status`, {
+    fetch(`https://citycare.onrender.com/api_update_status`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

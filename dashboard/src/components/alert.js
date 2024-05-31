@@ -15,7 +15,7 @@ function Alert() {
       message: message,
     };
     await axios
-      .post("http://localhost:5001/create_alert", data)
+      .post("https://citycare.onrender.com/create_alert", data)
       .then((res) => {
         console.log(res);
         if (res.status === 200) {

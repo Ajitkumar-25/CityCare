@@ -26,7 +26,7 @@ function Analytics() {
         };
 
         const response = await axios.post(
-          "http://localhost:5001/api_complaint_category_count",
+          "https://citycare.onrender.com/api_complaint_category_count",
           data
         );
 
@@ -54,7 +54,7 @@ function Analytics() {
         };
 
         const response = await axios.post(
-          "http://localhost:5001/api_complaint_pincode_count",
+          "https://citycare.onrender.com/api_complaint_pincode_count",
           data
         );
 

@@ -19,17 +19,17 @@
 // const getMarkerIcon = (category) => {
 //   switch (category) {
 //     case "water":
-//       return "http://localhost:5001/public/media/water.jpeg";
+//       return "https://citycare.onrender.com/public/media/water.jpeg";
 //     case "Road Maintaince":
-//       return "http://localhost:5001/public/media/road.jpeg";
+//       return "https://citycare.onrender.com/public/media/road.jpeg";
 //     case "stray_animals":
-//       return "http://localhost:5001/public/media/stray.jpeg";
+//       return "https://citycare.onrender.com/public/media/stray.jpeg";
 //     case "electricity":
-//       return "http://localhost:5001/public/media/electricity.jpeg";
+//       return "https://citycare.onrender.com/public/media/electricity.jpeg";
 //     case "garbage":
-//       return "http://localhost:5001/public/media/garbage.jpeg";
+//       return "https://citycare.onrender.com/public/media/garbage.jpeg";
 //     case "sanitation":
-//       return "http://localhost:5001/public/media/garbage.jpeg";
+//       return "https://citycare.onrender.com/public/media/garbage.jpeg";
 //     default:
 //       return "https://maps.google.com/mapfiles/ms/icons/red-dot.png";
 //   }
@@ -46,7 +46,7 @@
 //     const fetchComplaints = async () => {
 //       try {
 //         const response = await axios.post(
-//           `http://localhost:5001/all_complaints_coordinates_category/${org_info.category}`
+//           `https://citycare.onrender.com/all_complaints_coordinates_category/${org_info.category}`
 //         );
 //         setComplaints(response.data.allComplaints);
 //       } catch (error) {
@@ -118,7 +118,6 @@ import {
   GoogleMap,
   useJsApiLoader,
   Marker,
-  DirectionsService,
   DirectionsRenderer,
 } from "@react-google-maps/api";
 import Tabs from "./tabs";
@@ -151,7 +150,7 @@ const Location = () => {
     const fetchComplaints = async () => {
       try {
         const response = await axios.post(
-          `http://localhost:5001/all_complaints_coordinates_category/${org_info.category}`
+          `https://citycare.onrender.com/all_complaints_coordinates_category/${org_info.category}`
         );
         setComplaints(response.data.allComplaints);
       } catch (error) {
@@ -200,17 +199,17 @@ const Location = () => {
   const getMarkerIcon = (category) => {
     switch (category) {
       case "water":
-        return "http://localhost:5001/public/media/water.jpeg";
+        return "https://citycare.onrender.com/public/media/water.jpeg";
       case "Road Maintaince":
-        return "http://localhost:5001/public/media/road.jpeg";
+        return "https://citycare.onrender.com/public/media/road.jpeg";
       case "stray_animals":
-        return "http://localhost:5001/public/media/stray.jpeg";
+        return "https://citycare.onrender.com/public/media/stray.jpeg";
       case "electricity":
-        return "http://localhost:5001/public/media/electricity.jpeg";
+        return "https://citycare.onrender.com/public/media/electricity.jpeg";
       case "garbage":
-        return "http://localhost:5001/public/media/garbage.jpeg";
+        return "https://citycare.onrender.com/public/media/garbage.jpeg";
       case "sanitation":
-        return "http://localhost:5001/public/media/garbage.jpeg";
+        return "https://citycare.onrender.com/public/media/garbage.jpeg";
       default:
         return "";
     }

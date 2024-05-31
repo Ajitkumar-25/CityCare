@@ -17,7 +17,7 @@ function Signup() {
   const handlesubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:5001/api_organization_registration", {
+      .post("https://citycare.onrender.com/api_organization_registration", {
         name,
         email,
         password,
