@@ -40,8 +40,9 @@ yarn-error.log
 buck-out/
 \.buckd/
 *.keystore
-#api
-utils/Api.js
+#API
+src/utils/Api.js
+
 
 # fastlane
 #
